@@ -1,14 +1,12 @@
 package pojo;
 
-import dao.CustomDao;
-import dao.MyDBHelper;
+import dao.HistoryDao;
 import factory.BookFactory;
 import org.junit.Test;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -40,7 +38,20 @@ public class BookTest {
 //        CustomDao.createTable();
 //        Custom custom = new Custom("13843468583", "战三", 10000, 10000, "100-10", "");
 //        CustomDao.insertCustom(custom);
-        List<Custom> customs = CustomDao.selectCustomByPhone("138");
-        System.out.println(customs);
+//        List<Custom> customs = CustomDao.selectCustomByPhone("138");
+//        System.out.println(customs);
+        if (!HistoryDao.exists()) {
+            HistoryDao.createTable();
+        }
+        History history = new History();
+        history.setId(1);
+        history.setName("张三");
+        history.setPhone("10000000000");
+        history.setMoney(1000);
+        history.setSubject("剪发");
+        history.setDate(new Date().getTime());
+        history.setRemark("会员");
+
+        HistoryDao.insertHistory(history);
     }
 }
