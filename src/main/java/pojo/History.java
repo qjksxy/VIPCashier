@@ -6,19 +6,19 @@ public class History {
     String subject;
     String name;
     int money;
-    long time;
+    long date;
     String remark;
 
     public History() {
     }
 
-    public History(int id, String phone, String subject, String name, int money, long time, String remark) {
+    public History(int id, String phone, String subject, String name, int money, long date, String remark) {
         this.id = id;
         this.phone = phone;
         this.subject = subject;
         this.name = name;
         this.money = money;
-        this.time = time;
+        this.date = date;
         this.remark = remark;
     }
 
@@ -62,12 +62,12 @@ public class History {
         this.money = money;
     }
 
-    public long getTime() {
-        return time;
+    public long getDate() {
+        return date;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public String getRemark() {
@@ -101,7 +101,7 @@ public class History {
                 ", subject='" + subject + '\'' +
                 ", name='" + name + '\'' +
                 ", money=" + money +
-                ", time=" + time +
+                ", time=" + date +
                 ", remark='" + remark + '\'' +
                 '}';
     }
