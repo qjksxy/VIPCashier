@@ -25,13 +25,13 @@ public class HistoryDao {
             Statement stmt;
             stmt = c.createStatement();
             String sql = "CREATE TABLE HISTORY " +
-                    "(ID      INT PRIMARY KEY      NOT NULL," +
-                    " PHONE   TEXT," +
-                    " SUBJECT  TEXT                  NOT NULL," +
-                    " NAME TEXT," +
-                    " MONEY   INT                    NOT NULL," +
-                    " DATE   INTEGER," +
-                    " REMARK  TEXT)";
+                    "(ID       INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " PHONE    TEXT," +
+                    " SUBJECT  TEXT              NOT NULL," +
+                    " NAME     TEXT," +
+                    " MONEY    INT               NOT NULL," +
+                    " DATE     INTEGER," +
+                    " REMARK   TEXT)";
             stmt.executeUpdate(sql);
             stmt.close();
 
@@ -49,10 +49,10 @@ public class HistoryDao {
         try {
             stmt = c.createStatement();
             // int id, String phone, String subject, String name, int money, long time, String remark
-            String values = "VALUES (" + history.getId() + ", '" + history.getPhone() + "', '" +
+            String values = "VALUES ('" + history.getPhone() + "', '" +
                     history.getSubject() + "', '" + history.getName() + "', " + history.getMoney() + ", " +
                     history.getDate() + ", '" + history.getRemark() + "');";
-            String sql = "INSERT INTO HISTORY (ID, PHONE, SUBJECT, NAME, MONEY, DATE, REMARK) " + values;
+            String sql = "INSERT INTO HISTORY (PHONE, SUBJECT, NAME, MONEY, DATE, REMARK) " + values;
             stmt.executeUpdate(sql);
             stmt.close();
         } catch (Exception e) {
