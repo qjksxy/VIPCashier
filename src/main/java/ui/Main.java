@@ -8,9 +8,6 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-// TODO:
-// 加微信
-
 public class Main {
     static {
         initializeTheme();
