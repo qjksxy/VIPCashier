@@ -7,6 +7,7 @@ import pojo.Custom;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.util.List;
 
 public class Main {
     static {
@@ -14,16 +15,16 @@ public class Main {
     }
 
     public static final Font DEFAULT_FONT = new Font("微软雅黑", Font.PLAIN, 20);
-    public static final String ZHUCE_HUIYUAN = "注册会员";
+    public static final String HUIYUAN_JIAOFEI = "会员缴费";
     public static final String HUIYUAN_XIAOFEI = "会员消费";
     public static final String PUTONG_XIAOFEI = "普通消费";
     public static final String HUIYUAN_XINXI = "会员信息";
     public static final String CHAXUN_JILU = "查询记录";
     public static final String TONGJI_SHUJU = "统计数据";
-    private static final JLabel statusLeftLabel = new JLabel(DEFAULT_FONT.toString());
+    private static final JLabel statusLeftLabel = new JLabel(HUIYUAN_JIAOFEI);
     private static final JLabel statusCenterLabel = new JLabel();
     private static final JLabel statusRightLabel = new JLabel();
-    private static final JButton zchyBtn = new JButton(ZHUCE_HUIYUAN);
+    private static final JButton hyjfBtn = new JButton(HUIYUAN_JIAOFEI);
     private static final JButton hyxfBtn = new JButton(HUIYUAN_XIAOFEI);
     private static final JButton ptxfBtn = new JButton(PUTONG_XIAOFEI);
     private static final JButton hyxxBtn = new JButton(HUIYUAN_XINXI);
@@ -32,7 +33,7 @@ public class Main {
     // 设置中心面板
     private static final CardLayout cardLayout = new CardLayout();
     private static final JPanel centerPanel = new JPanel(cardLayout);
-    private static final JPanel zchyPanel = new JPanel();
+    private static final JPanel hyjfPanel = new JPanel();
     private static final JPanel hyxfPanel = new JPanel();
     private static final JPanel ptxfPanel = new JPanel();
     private static final JPanel hyxxPanel = new JPanel();
@@ -81,24 +82,24 @@ public class Main {
         SpringLayout layout = new SpringLayout();
         panel.setLayout(layout);
 
-        panel.add(zchyBtn);
+        panel.add(hyjfBtn);
         panel.add(hyxfBtn);
         panel.add(ptxfBtn);
         panel.add(hyxxBtn);
         panel.add(cxjlBtn);
         panel.add(tjsjBtn);
 
-        SpringLayout.Constraints zchyCon = layout.getConstraints(zchyBtn);
+        SpringLayout.Constraints hyjfCon = layout.getConstraints(hyjfBtn);
         SpringLayout.Constraints hyxfCon = layout.getConstraints(hyxfBtn);
         SpringLayout.Constraints ptxfCon = layout.getConstraints(ptxfBtn);
         SpringLayout.Constraints hyxxCon = layout.getConstraints(hyxxBtn);
         SpringLayout.Constraints cxjlCon = layout.getConstraints(cxjlBtn);
         SpringLayout.Constraints tjsjCon = layout.getConstraints(tjsjBtn);
 
-        zchyCon.setX(Spring.constant(5));
-        zchyCon.setY(Spring.constant(5));
+        hyjfCon.setX(Spring.constant(5));
+        hyjfCon.setY(Spring.constant(5));
         hyxfCon.setX(Spring.constant(5));
-        hyxfCon.setY(zchyCon.getConstraint(SpringLayout.SOUTH));
+        hyxfCon.setY(hyjfCon.getConstraint(SpringLayout.SOUTH));
         ptxfCon.setX(Spring.constant(5));
         ptxfCon.setY(hyxfCon.getConstraint(SpringLayout.SOUTH));
         hyxxCon.setX(Spring.constant(5));
@@ -118,7 +119,7 @@ public class Main {
     }
 
     private static void initCardPanel() {
-        centerPanel.add(ZHUCE_HUIYUAN, zchyPanel);
+        centerPanel.add(HUIYUAN_JIAOFEI, hyjfPanel);
         centerPanel.add(HUIYUAN_XIAOFEI, hyxfPanel);
         centerPanel.add(PUTONG_XIAOFEI, ptxfPanel);
         centerPanel.add(HUIYUAN_XINXI, hyxxPanel);
@@ -127,14 +128,14 @@ public class Main {
     }
 
     private static void initBtnListener() {
-        zchyBtn.addActionListener(e -> statusLeftLabel.setText(ZHUCE_HUIYUAN));
+        hyjfBtn.addActionListener(e -> statusLeftLabel.setText(HUIYUAN_JIAOFEI));
         hyxfBtn.addActionListener(e -> statusLeftLabel.setText(HUIYUAN_XIAOFEI));
         ptxfBtn.addActionListener(e -> statusLeftLabel.setText(PUTONG_XIAOFEI));
         hyxxBtn.addActionListener(e -> statusLeftLabel.setText(HUIYUAN_XINXI));
         cxjlBtn.addActionListener(e -> statusLeftLabel.setText(CHAXUN_JILU));
         tjsjBtn.addActionListener(e -> statusLeftLabel.setText(TONGJI_SHUJU));
 
-        zchyBtn.addActionListener(e -> cardLayout.show(centerPanel, ZHUCE_HUIYUAN));
+        hyjfBtn.addActionListener(e -> cardLayout.show(centerPanel, HUIYUAN_JIAOFEI));
         hyxfBtn.addActionListener(e -> cardLayout.show(centerPanel, HUIYUAN_XIAOFEI));
         ptxfBtn.addActionListener(e -> cardLayout.show(centerPanel, PUTONG_XIAOFEI));
         hyxxBtn.addActionListener(e -> cardLayout.show(centerPanel, HUIYUAN_XINXI));
@@ -143,7 +144,7 @@ public class Main {
     }
 
     private static void initCenterPanels() {
-        JPanel panel = zchyPanel;
+        JPanel panel = hyjfPanel;
         SpringLayout layout = new SpringLayout();
         panel.setLayout(layout);
 
@@ -162,7 +163,8 @@ public class Main {
         JTextField amountField = new JTextField();panel.add(amountField);
         JTextField levelField = new JTextField();panel.add(levelField);
         JTextField remarkField = new JTextField();panel.add(remarkField);
-        JButton okBtn = new JButton("确认");panel.add(okBtn);
+        JButton okBtn = new JButton("确认");
+        okBtn.setFont(DEFAULT_FONT);panel.add(okBtn);
 
 
         SpringLayout.Constraints nameLabelCon = layout.getConstraints(nameLabel);
@@ -227,18 +229,23 @@ public class Main {
             int balance = amount;
 
             Custom custom = new Custom(phone, name, amount, balance, level, remark);
-            CustomDao.insertCustom(custom);
-            Dialog.showDialog("提示", "成功添加用户");
-            // todo: 检测是否成功添加，判断是否已有用户
-            nameField.setText("");
-            phoneField.setText("");
-            levelField.setText("");
-            remarkField.setText("");
-            amountField.setText("");
+            if (!CustomDao.exists()) {
+                CustomDao.createTable();
+            }
 
+            List<Custom> customs = CustomDao.selectCustomByPhone(custom.getPhone());
+            if (customs.isEmpty()) {
+                CustomDao.insertCustom(custom);
+                Dialog.showDialog("提示", "成功添加用户");
+                nameField.setText("");
+                phoneField.setText("");
+                levelField.setText("");
+                remarkField.setText("");
+                amountField.setText("");
+            } else {
+                Dialog.showDialog("错误", "该用户[" + customs.get(0).getPhone() + ": " + customs.get(0).getName() + "]已经存在，请检查电话号");
+            }
         });
-
-
     }
 
     private static void springTest() {
