@@ -24,3 +24,7 @@ hs_err_pid*
 
 # sqlite 相关
 *.db
+
+# idea
+.idea/
+target/
