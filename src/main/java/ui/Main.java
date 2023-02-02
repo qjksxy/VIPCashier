@@ -67,7 +67,7 @@ public class Main {
         initOpPanel(opPanel);
         initBtnListener();
         initCardPanel();
-        initCenterPanels();
+        initHYJFPanel();
 
 
         mainPanel.add(opPanel, BorderLayout.WEST);
@@ -143,7 +143,7 @@ public class Main {
         tjsjBtn.addActionListener(e -> cardLayout.show(centerPanel, TONGJI_SHUJU));
     }
 
-    private static void initCenterPanels() {
+    private static void initHYJFPanel() {
         JPanel panel = hyjfPanel;
         SpringLayout layout = new SpringLayout();
         panel.setLayout(layout);
@@ -225,26 +225,41 @@ public class Main {
             String phone = phoneField.getText();
             String level = levelField.getText();
             String remark = remarkField.getText();
-            int amount = Integer.parseInt(amountField.getText());
-            int balance = amount;
+            String amendText = amountField.getText();
+            boolean inputIsValid = name != null && !name.equals("") &&
+                    phone != null && !phone.equals("") &&
+                    amendText != null && !amendText.equals("");
+            if (inputIsValid) {
+                int amount = (int) (Double.parseDouble(amendText) * 100);
+                int balance = amount;
 
-            Custom custom = new Custom(phone, name, amount, balance, level, remark);
-            if (!CustomDao.exists()) {
-                CustomDao.createTable();
-            }
+                Custom custom = new Custom(phone, name, amount, balance, level, remark);
+                if (!CustomDao.exists()) {
+                    CustomDao.createTable();
+                }
 
-            List<Custom> customs = CustomDao.selectCustomByPhone(custom.getPhone());
-            if (customs.isEmpty()) {
-                CustomDao.insertCustom(custom);
-                Dialog.showDialog("提示", "成功添加用户");
-                nameField.setText("");
-                phoneField.setText("");
-                levelField.setText("");
-                remarkField.setText("");
-                amountField.setText("");
+                List<Custom> customs = CustomDao.selectCustomByPhone(custom.getPhone());
+                if (customs.isEmpty()) {
+                    CustomDao.insertCustom(custom);
+                    Dialog.showDialog("提示", "成功添加用户");
+                    nameField.setText("");
+                    phoneField.setText("");
+                    levelField.setText("");
+                    remarkField.setText("");
+                    amountField.setText("");
+                } else {
+                    StringBuilder message = new StringBuilder();
+                    Custom c = customs.get(0);
+                    String cBalance = String.format("%.2f", c.getBalance() / 100.0);
+                    message.append("该用户[").append(c.getPhone()).append("：").append(c.getName());
+                    message.append("]已经存在，余额剩余：").append(cBalance);
+                    Dialog.showDialog("用户已经存在", message.toString());
+                }
             } else {
-                Dialog.showDialog("错误", "该用户[" + customs.get(0).getPhone() + ": " + customs.get(0).getName() + "]已经存在，请检查电话号");
+                Dialog.showDialog("错误", "请补全电话、姓名和缴费金额");
             }
+
+
         });
     }
 
@@ -340,9 +355,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        // 加载主题
-        // initializeTheme();
-
         new Main();
     }
 }
